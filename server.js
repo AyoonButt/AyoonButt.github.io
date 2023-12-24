@@ -1,0 +1,82 @@
+const express = require('express');
+const axios = require('axios');
+const session = require('express-session');
+
+const app = express();
+const port = 3000;
+
+app.use(session({
+  secret: 'your_secret_key',
+  resave: true,
+  saveUninitialized: true
+}));
+
+// Serve static files from the 'public' folder
+app.use(express.static('public'));
+
+// Store the authorization code in a global variable
+let authorizationCode;
+
+app.get('/', (req, res) => {
+  // Generate a random code verifier and calculate the code challenge
+  const codeVerifier = generateCodeVerifier();
+  const codeChallenge = base64URLEncode(sha256(codeVerifier));
+
+  // Save the code verifier in the session (for later use during token exchange)
+  req.session.codeVerifier = codeVerifier;
+
+  // Redirect the user to Twitter for authentication
+  res.redirect(`https://api.twitter.com/oauth/authenticate?client_id=YOUR_API_KEY&redirect_uri=http://localhost:3000/callback&response_type=code&scope=read&code_challenge=${codeChallenge}&code_challenge_method=S256`);
+});
+
+app.get('/callback', async (req, res) => {
+  const { code } = req.query;
+  const { codeVerifier } = req.session;
+
+  // Store the authorization code globally
+  authorizationCode = code;
+
+  // Render a simple HTML response
+  res.send('<h1>Authorization code received. You can close this window/tab.</h1>');
+
+  // Now you can send the authorization code to the bot (you need to implement this part)
+  sendAuthorizationCodeToBot(authorizationCode);
+});
+
+function sendAuthorizationCodeToBot(code) {
+    function sendAuthorizationCodeToBot(code) {
+        // Replace 'http://bot-server/authorize' with the actual endpoint of your bot server
+        const botServerEndpoint = 'http://your-bot-server:4567/authorize';
+      
+        // Make a POST request to the bot server to send the authorization code
+        axios.post(botServerEndpoint, { code })
+          .then(response => {
+            console.log(response.data);
+            // Handle success if needed
+          })
+          .catch(error => {
+            console.error(error);
+            // Handle error if needed
+          });
+      }
+      
+}
+
+function base64URLEncode(str) {
+  return str.toString('base64')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=/g, '');
+}
+
+function sha256(buffer) {
+  return require('crypto').createHash('sha256').update(buffer).digest();
+}
+
+function generateCodeVerifier() {
+  return base64URLEncode(require('crypto').randomBytes(32));
+}
+
+app.listen(port, () => {
+  console.log(`Server is running at http://localhost:${port}`);
+});
