@@ -1,23 +1,27 @@
+// server.js
+
+require('dotenv').config();
 const express = require('express');
 const axios = require('axios');
-const session = require('express-session');
 
 const app = express();
 const port = 3000;
 
+// Set up middleware to parse JSON
+app.use(express.json());
+
+// Store the authorization code in a global variable
+let authorizationCode;
+
+// Set up a session
 app.use(session({
   secret: 'your_secret_key',
   resave: true,
   saveUninitialized: true
 }));
 
-// Serve static files from the 'public' folder
-app.use(express.static('public'));
-
-// Store the authorization code in a global variable
-let authorizationCode;
-
-app.get('/', (req, res) => {
+// Endpoint to initiate Twitter authentication
+app.get('/initiate-authentication', (req, res) => {
   // Generate a random code verifier and calculate the code challenge
   const codeVerifier = generateCodeVerifier();
   const codeChallenge = base64URLEncode(sha256(codeVerifier));
@@ -26,7 +30,7 @@ app.get('/', (req, res) => {
   req.session.codeVerifier = codeVerifier;
 
   // Redirect the user to Twitter for authentication
-  res.redirect(`https://api.twitter.com/oauth/authenticate?client_id=YOUR_API_KEY&redirect_uri=http://localhost:3000/callback&response_type=code&scope=read&code_challenge=${codeChallenge}&code_challenge_method=S256`);
+  res.redirect(`https://api.twitter.com/oauth/authenticate?client_id=${process.env.TWITTER_API_KEY}&redirect_uri=http://localhost:3000/callback&response_type=code&scope=read&code_challenge=${codeChallenge}&code_challenge_method=S256`);
 });
 
 app.get('/callback', async (req, res) => {
@@ -44,22 +48,19 @@ app.get('/callback', async (req, res) => {
 });
 
 function sendAuthorizationCodeToBot(code) {
-    function sendAuthorizationCodeToBot(code) {
-        // Replace 'http://bot-server/authorize' with the actual endpoint of your bot server
-        const botServerEndpoint = 'http://your-bot-server:4567/authorize';
-      
-        // Make a POST request to the bot server to send the authorization code
-        axios.post(botServerEndpoint, { code })
-          .then(response => {
-            console.log(response.data);
-            // Handle success if needed
-          })
-          .catch(error => {
-            console.error(error);
-            // Handle error if needed
-          });
-      }
-      
+  // Replace 'http://bot-server/authorize' with the actual endpoint of your bot server
+  const botServerEndpoint = 'http://your-bot-server:4567/authorize';
+
+  // Make a POST request to the bot server to send the authorization code
+  axios.post(botServerEndpoint, { code })
+    .then(response => {
+      console.log(response.data);
+      // Handle success if needed
+    })
+    .catch(error => {
+      console.error(error);
+      // Handle error if needed
+    });
 }
 
 function base64URLEncode(str) {
@@ -80,3 +81,4 @@ function generateCodeVerifier() {
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });
+
