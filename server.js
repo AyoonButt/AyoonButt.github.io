@@ -49,7 +49,7 @@ app.get('/callback', async (req, res) => {
 
 function sendAuthorizationCodeToBot(code) {
   // Replace 'http://bot-server/authorize' with the actual endpoint of your bot server
-  const botServerEndpoint = 'http://your-bot-server:4567/authorize';
+  const botServerEndpoint = 'https://twitterbot-ayoonbutt.azurewebsites.net';
 
   // Make a POST request to the bot server to send the authorization code
   axios.post(botServerEndpoint, { code })
