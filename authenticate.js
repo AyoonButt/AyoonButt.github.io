@@ -4,6 +4,7 @@ function initiateAuthentication() {
     // Make an HTTP request to the server to initiate Twitter authentication
     axios.get('/initiate-authentication')
       .then(response => {
+        console.log("Initiating authentication..."); // Add this line
         console.log(response.data);
         // Handle success if needed
       })

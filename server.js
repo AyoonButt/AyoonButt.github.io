@@ -2,6 +2,7 @@
 
 require('dotenv').config();
 const express = require('express');
+const session = require('express-session');
 const axios = require('axios');
 
 const app = express();
@@ -30,7 +31,8 @@ app.get('/initiate-authentication', (req, res) => {
   req.session.codeVerifier = codeVerifier;
 
   // Redirect the user to Twitter for authentication
-  res.redirect(`https://api.twitter.com/oauth/authenticate?client_id=${process.env.TWITTER_API_KEY}&redirect_uri=http://localhost:3000/callback&response_type=code&scope=read&code_challenge=${codeChallenge}&code_challenge_method=S256`);
+  res.redirect(`https://api.twitter.com/oauth/authenticate?client_id=${process.env.TWITTER_API_KEY}&redirect_uri=https://authenthicatebot.azurewebsites.net/callback&response_type=code&scope=read&code_challenge=${codeChallenge}&code_challenge_method=S256`);
+
 });
 
 app.get('/callback', async (req, res) => {
@@ -79,6 +81,6 @@ function generateCodeVerifier() {
 }
 
 app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
+  console.log(`Server is running at https://authenthicatebot.azurewebsites.net/`);
 });
 
