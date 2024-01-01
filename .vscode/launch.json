@@ -1,0 +1,10 @@
+{
+    "configurations": [
+        {
+            "type": "msedge",
+            "name": "https://authenthicatebot.azurewebsites.net/",
+            "request": "launch",
+            "url": "https://authenthicatebot.azurewebsites.net/"
+        }
+    ]
+}
