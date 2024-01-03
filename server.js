@@ -1,9 +1,8 @@
-// server.js
-
 require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const axios = require('axios');
+const path = require('path');
 
 const app = express();
 const port = 3000;
@@ -21,6 +20,10 @@ app.use(session({
   saveUninitialized: true
 }));
 
+// Serve static files (including directory listings) from the wwwroot directory
+const wwwrootPath = path.join(__dirname, 'wwwroot');
+app.use(express.static(wwwrootPath, { 'extensions': ['html', 'htm'], 'redirect': false }));
+
 // Endpoint to initiate Twitter authentication
 app.get('/initiate-authentication', (req, res) => {
   // Generate a random code verifier and calculate the code challenge
@@ -32,7 +35,6 @@ app.get('/initiate-authentication', (req, res) => {
 
   // Redirect the user to Twitter for authentication
   res.redirect(`https://api.twitter.com/oauth/authenticate?client_id=${process.env.TWITTER_API_KEY}&redirect_uri=https://authenthicatebot.azurewebsites.net/callback&response_type=code&scope=read&code_challenge=${codeChallenge}&code_challenge_method=S256`);
-
 });
 
 app.get('/callback', async (req, res) => {
@@ -76,11 +78,6 @@ function sha256(buffer) {
   return require('crypto').createHash('sha256').update(buffer).digest();
 }
 
-function generateCodeVerifier() {
-  return base64URLEncode(require('crypto').randomBytes(32));
-}
-
 app.listen(port, () => {
   console.log(`Server is running at https://authenthicatebot.azurewebsites.net/`);
 });
-
