@@ -2,15 +2,16 @@ require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const axios = require('axios');
-const config = require('./config'); // Adjust the path based on your file structure
+const path = require('path');
+const serveIndex = require('serve-index'); // Add this line
+const config = require('./config.js');
 
 const app = express();
-const port = config.server.port || 3000;
+const port = config.server.port;
 
 // Access your Twitter API keys
 const twitterApiKey = config.twitterApi.apiKey;
 const twitterApiSecret = config.twitterApi.apiSecret;
-
 
 // Set up middleware to parse JSON
 app.use(express.json());
@@ -27,7 +28,8 @@ app.use(session({
 
 // Serve static files (including directory listings) from the wwwroot directory
 const wwwrootPath = path.join(__dirname, 'wwwroot');
-app.use(express.static(wwwrootPath, { 'extensions': ['html', 'htm'], 'redirect': false }));
+app.use(express.static(wwwrootPath, { extensions: ['html', 'htm'], redirect: false }));
+app.use('/', serveIndex(wwwrootPath, { icons: true })); // Add this line for directory listings
 
 // Endpoint to initiate Twitter authentication
 app.get('/initiate-authentication', (req, res) => {
