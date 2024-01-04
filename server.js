@@ -29,6 +29,9 @@ app.use(session({
 // Serve static files (including directory listings) from the wwwroot directory
 const wwwrootPath = path.join(__dirname, 'wwwroot');
 app.use(express.static(wwwrootPath, { extensions: ['html', 'htm'], redirect: false }));
+app.use('/initiate-authentication', serveIndex(wwwrootPath, { icons: true }));
+app.use('/callback', serveIndex(wwwrootPath, { icons: true }));
+
 app.use('/', serveIndex(wwwrootPath, { icons: true })); // Add this line for directory listings
 
 // Endpoint to initiate Twitter authentication
