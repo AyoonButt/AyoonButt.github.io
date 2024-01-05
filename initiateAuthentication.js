@@ -1,5 +1,5 @@
 // initiateAuthentication.js
-import axios from 'axios';
+
 
 
 async function initiateAuthentication() {
