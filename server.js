@@ -2,7 +2,6 @@ const express = require('express');
 const session = require('express-session');
 const axios = require('axios');
 const path = require('path');
-const serveIndex = require('serve-index'); // Add this line
 const config = require('./config.js');
 
 const app = express();
@@ -29,20 +28,15 @@ app.use(session({
 const wwwrootPath = path.join(__dirname, 'wwwroot');
 app.use(express.static(wwwrootPath, { extensions: ['html', 'htm'], redirect: false }));
 
-// Serve index.html as the default document for the root URL
-app.get('/', (req, res) => {
+// Serve index.html as the default document for specific URLs
+const serveIndexHtml = (req, res) => {
   res.sendFile(path.join(wwwrootPath, 'index.html'));
-});
+};
 
-// Serve index.html as the default document for /initiate-authentication URL
-app.get('/initiate-authentication', (req, res) => {
-  res.sendFile(path.join(wwwrootPath, 'index.html'));
-});
-
-// Serve index.html as the default document for /callback URL
-app.get('/callback', (req, res) => {
-  res.sendFile(path.join(wwwrootPath, 'index.html'));
-});
+// Define the endpoints
+app.get('/', serveIndexHtml);
+app.get('/initiate-authentication', serveIndexHtml);
+app.get('/callback', serveIndexHtml);
 
 // Endpoint to initiate Twitter authentication
 app.get('/initiate-authentication', (req, res) => {

@@ -8,24 +8,13 @@
     <title>Twitter Bot Authentication</title>
 
     <!-- Include Axios library -->
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js"></script>
 
+    <!-- Include the initiateAuthentication.js file -->
+    <script src="initiateAuthentication.js"></script>
 </head>
 <body>
     <h1>Welcome to the Twitter Bot Authentication</h1>
     <button onclick="initiateAuthentication()">Authenticate with Twitter</button>
-
-    <script>
-        async function initiateAuthentication() {
-            try {
-                const response = await axios.get('https://authenthicatebot.azurewebsites.net/initiate-authentication');
-                console.log(response.data);
-                // Continue with your logic here
-            } catch (error) {
-                console.error('Error initiating authentication:', error.message);
-                // Handle the error appropriately
-            }
-        }
-
-    </script>
 </body>
+</html>
