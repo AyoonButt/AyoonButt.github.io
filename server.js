@@ -1,4 +1,3 @@
-require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const axios = require('axios');
@@ -29,10 +28,21 @@ app.use(session({
 // Serve static files (including directory listings) from the wwwroot directory
 const wwwrootPath = path.join(__dirname, 'wwwroot');
 app.use(express.static(wwwrootPath, { extensions: ['html', 'htm'], redirect: false }));
-app.use('/initiate-authentication', serveIndex(wwwrootPath, { icons: true }));
-app.use('/callback', serveIndex(wwwrootPath, { icons: true }));
 
-app.use('/', serveIndex(wwwrootPath, { icons: true })); // Add this line for directory listings
+// Serve index.html as the default document for the root URL
+app.get('/', (req, res) => {
+  res.sendFile(path.join(wwwrootPath, 'index.html'));
+});
+
+// Serve index.html as the default document for /initiate-authentication URL
+app.get('/initiate-authentication', (req, res) => {
+  res.sendFile(path.join(wwwrootPath, 'index.html'));
+});
+
+// Serve index.html as the default document for /callback URL
+app.get('/callback', (req, res) => {
+  res.sendFile(path.join(wwwrootPath, 'index.html'));
+});
 
 // Endpoint to initiate Twitter authentication
 app.get('/initiate-authentication', (req, res) => {
