@@ -6,21 +6,6 @@ const config = require('./config.js');
 
 const app = express();
 const port = config.server.port;
-const fs = require('fs');
-const path = require('path');
-
-const rootPath = __dirname; // Assumes this script is in the root of your application
-
-const indexPath = path.join(rootPath, 'index.html');
-
-fs.access(indexPath, fs.constants.F_OK, (err) => {
-  if (err) {
-    console.error('index.html does not exist in the root directory.');
-  } else {
-    console.log('index.html is present in the root directory.');
-  }
-});
-
 
 // Access your Twitter API keys
 const twitterApiKey = config.twitterApi.apiKey;
