@@ -30,20 +30,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// Serve static files (including directory listings) from the wwwroot directory
-const wwwrootPath = path.join(__dirname, 'wwwroot');
-app.use(express.static(wwwrootPath, { extensions: ['html', 'htm'], redirect: false }));
-
-// Define the serveIndexHtml function
-const serveIndexHtml = (req, res) => {
-  res.sendFile(path.join(wwwrootPath, 'index.html'));
-};
-
-// Define the endpoints
-app.get('/', serveIndexHtml);
-app.get('/initiate-authentication', serveIndexHtml);
-app.get('/callback', serveIndexHtml);
-
 // Endpoint to initiate Twitter authentication
 app.get('/initiate-authentication', (req, res) => {
   // Generate a random code verifier and calculate the code challenge
