@@ -1,14 +1,18 @@
 // initiateAuthentication.js
 
-
-
-async function initiateAuthentication() {
-    try {
-        const response = await axios.get('https://authenthicatebot.azurewebsites.net/initiate-authentication');
+function initiateAuthentication() {
+    console.log("Initiating authentication...");
+    
+    // Make an HTTP request to the server to initiate Twitter authentication
+    axios.get('/initiate-authentication')
+      .then(response => {
+        console.log("Authentication initiated successfully:");
         console.log(response.data);
-        // Continue with your logic here
-    } catch (error) {
-        console.error('Error initiating authentication:', error.message);
-        // Handle the error appropriately
-    }
-}
+        // Handle success if needed
+      })
+      .catch(error => {
+        console.error("Error initiating authentication:", error);
+        // Handle error if needed
+      });
+  }
+  
