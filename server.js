@@ -24,11 +24,17 @@ app.use(session({
   saveUninitialized: true
 }));
 
+// Middleware to set Content-Type header for HTML
+app.use((req, res, next) => {
+  res.header('Content-Type', 'text/html');
+  next();
+});
+
 // Serve static files (including directory listings) from the wwwroot directory
 const wwwrootPath = path.join(__dirname, 'wwwroot');
 app.use(express.static(wwwrootPath, { extensions: ['html', 'htm'], redirect: false }));
 
-// Serve index.html as the default document for specific URLs
+// Define the serveIndexHtml function
 const serveIndexHtml = (req, res) => {
   res.sendFile(path.join(wwwrootPath, 'index.html'));
 };
