@@ -24,11 +24,6 @@ app.use(session({
   saveUninitialized: true
 }));
 
-// Middleware to set Content-Type header for HTML
-app.use((req, res, next) => {
-  res.header('Content-Type', 'text/html');
-  next();
-});
 
 // Endpoint to initiate Twitter authentication
 app.get('/initiate-authentication', (req, res) => {
