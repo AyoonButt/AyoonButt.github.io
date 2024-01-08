@@ -1,12 +1,16 @@
 // initiateAuthentication.js
-function initiateAuthentication() {
 
-axios.get('/initiate-authentication', { responseType: 'text' })
-  .then(response => {
-    // Handle the HTML response here
-    console.log(response.data);
-  })
-  .catch(error => {
-    // Handle errors as needed
-  });
+function initiateAuthentication() {
+    axios.get('/initiate-authentication')
+        .then(response => {
+            // Log the response to the console
+            console.log(response.data);
+
+            // Continue with your logic here, including redirection
+            window.location.href = response.data;
+        })
+        .catch(error => {
+            // Handle errors as needed
+            console.error('Error initiating authentication:', error.message);
+        });
 }
