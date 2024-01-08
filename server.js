@@ -21,7 +21,7 @@ app.use(session({
   saveUninitialized: true
 }));
 
-// Change the response type to JSON
+// Change the response type to HTML
 app.get('/initiate-authentication', (req, res) => {
   // Generate a random code verifier and calculate the code challenge
   const codeVerifier = generateCodeVerifier();
@@ -33,8 +33,8 @@ app.get('/initiate-authentication', (req, res) => {
   // Generate the Twitter authentication URL
   const twitterAuthUrl = `https://api.twitter.com/oauth/authenticate?client_id=${twitterApiKey}&redirect_uri=https://authenthicatebot.azurewebsites.net/callback&response_type=code&scope=read&code_challenge=${codeChallenge}&code_challenge_method=S256`;
 
-  // Send the Twitter authentication URL as JSON
-  res.json({ twitterAuthUrl });
+  // Send the Twitter authentication URL as HTML
+  res.send(`<html><body><a href="${twitterAuthUrl}">Authenticate with Twitter</a></body></html>`);
 });
 
 app.get('/callback', async (req, res) => {
