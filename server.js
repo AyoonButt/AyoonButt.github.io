@@ -24,7 +24,6 @@ app.use(session({
   saveUninitialized: true
 }));
 
-
 // Endpoint to initiate Twitter authentication
 app.get('/initiate-authentication', (req, res) => {
   // Generate a random code verifier and calculate the code challenge
@@ -34,8 +33,11 @@ app.get('/initiate-authentication', (req, res) => {
   // Save the code verifier in the session (for later use during token exchange)
   req.session.codeVerifier = codeVerifier;
 
-  // Redirect the user to Twitter for authentication
-  res.redirect(`https://api.twitter.com/oauth/authenticate?client_id=${twitterApiKey}&redirect_uri=https://authenthicatebot.azurewebsites.net/callback&response_type=code&scope=read&code_challenge=${codeChallenge}&code_challenge_method=S256`);
+  // Generate the Twitter authentication URL
+  const twitterAuthUrl = `https://api.twitter.com/oauth/authenticate?client_id=${twitterApiKey}&redirect_uri=https://authenthicatebot.azurewebsites.net/callback&response_type=code&scope=read&code_challenge=${codeChallenge}&code_challenge_method=S256`;
+
+  // Send the Twitter authentication URL to the client
+  res.json(twitterAuthUrl);
 });
 
 app.get('/callback', async (req, res) => {
@@ -54,7 +56,7 @@ app.get('/callback', async (req, res) => {
 
 function sendAuthorizationCodeToBot(code) {
   // Replace 'http://bot-server/authorize' with the actual endpoint of your bot server
-  const botServerEndpoint = 'https://twitterbot-ayoonbutt.azurewebsites.net';
+  const botServerEndpoint = 'https://twitterbot-ayoonbutt.azurewebsites.net/authorize';
 
   // Make a POST request to the bot server to send the authorization code
   axios.post(botServerEndpoint, { code })
@@ -77,6 +79,10 @@ function base64URLEncode(str) {
 
 function sha256(buffer) {
   return require('crypto').createHash('sha256').update(buffer).digest();
+}
+
+function generateCodeVerifier() {
+  return base64URLEncode(require('crypto').randomBytes(32));
 }
 
 app.listen(port, () => {
