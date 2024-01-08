@@ -11,9 +11,6 @@ const port = config.server.port;
 const twitterApiKey = config.twitterApi.apiKey;
 const twitterApiSecret = config.twitterApi.apiSecret;
 
-// Set up middleware to parse JSON
-app.use(express.json());
-
 // Store the authorization code in a global variable
 let authorizationCode;
 
@@ -39,7 +36,6 @@ app.get('/initiate-authentication', (req, res) => {
   // Send the Twitter authentication URL as JSON
   res.json({ twitterAuthUrl });
 });
-
 
 app.get('/callback', async (req, res) => {
   const { code } = req.query;
