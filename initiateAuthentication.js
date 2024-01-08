@@ -1,4 +1,5 @@
 // initiateAuthentication.js
+function initiateAuthentication() {
 
 axios.get('/initiate-authentication', { responseType: 'text' })
   .then(response => {
@@ -8,3 +9,4 @@ axios.get('/initiate-authentication', { responseType: 'text' })
   .catch(error => {
     // Handle errors as needed
   });
+}
