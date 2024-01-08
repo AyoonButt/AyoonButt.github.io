@@ -22,7 +22,7 @@ app.use(session({
 }));
 
 // Change the response type to HTML
-app.get('/initiate-authentication', (req, res) => {
+app.get(['/initiate-authentication', '/initiate-authentication/'], (req, res) => {
   // Generate a random code verifier and calculate the code challenge
   const codeVerifier = generateCodeVerifier();
   const codeChallenge = base64URLEncode(sha256(codeVerifier));
