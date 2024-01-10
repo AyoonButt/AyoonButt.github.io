@@ -7,6 +7,8 @@ const config = require('./config.js');
 const app = express();
 const port = config.server.port;
 
+app.use(express.json());
+
 // Access your Twitter API keys
 const twitterApiKey = config.twitterApi.apiKey;
 const twitterApiSecret = config.twitterApi.apiSecret;
