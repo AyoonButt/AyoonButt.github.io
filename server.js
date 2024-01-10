@@ -2,6 +2,7 @@ const express = require('express');
 const session = require('express-session');
 const axios = require('axios');
 const path = require('path');
+const fs = require('fs').promises; // Import the 'fs' module for file operations
 const config = require('./config.js');
 
 const app = express();
@@ -24,22 +25,26 @@ app.use(session({
 }));
 
 // Change the response type to HTML
-app.get(['/initiate-authentication', '/initiate-authentication/'], (req, res) => {
+app.get(['/initiate-authentication', '/initiate-authentication/'], async (req, res) => {
 
-    // Generate a random code verifier and calculate the code challenge
-    const codeVerifier = generateCodeVerifier();
-    const codeChallenge = base64URLEncode(sha256(codeVerifier));
-  
-    // Save the code verifier in the session (for later use during token exchange)
-    req.session.codeVerifier = codeVerifier;
-  
-    // Generate the Twitter authentication URL
-    const twitterAuthUrl = `https://api.twitter.com/oauth/authenticate?client_id=${twitterApiKey}&redirect_uri=https://authenthicatebot.azurewebsites.net/callback&response_type=code&scope=read&code_challenge=${codeChallenge}&code_challenge_method=S256`;
-  
-    // Send the Twitter authentication URL as JSON
-    res.json({ twitterAuthUrl });
-  });
+   // Generate a random code verifier and calculate the code challenge
+  const codeVerifier = generateCodeVerifier();
+  const codeChallenge = base64URLEncode(sha256(codeVerifier));
 
+  // Save the code verifier in the session (for later use during token exchange)
+  req.session.codeVerifier = codeVerifier;
+
+  // Generate the Twitter authentication URL
+  const data = { twitterAuthUrl };
+  try {
+    await fs.writeFile('twitterAuthUrl.json', JSON.stringify(data));
+    // Send a simple HTML response
+    res.send('<h1>Twitter Auth URL generated and saved.</h1>');
+  } catch (error) {
+    console.error('Error saving Twitter Auth URL:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
 
 app.get('/callback', async (req, res) => {
   const { code } = req.query;

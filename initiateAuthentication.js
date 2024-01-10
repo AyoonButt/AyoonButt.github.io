@@ -2,16 +2,19 @@
 
 function initiateAuthentication() {
     // Make a GET request to the /initiate-authentication endpoint on your server
-    axios.get('/initiate-authentication')
-        .then(response => {
-            // Extract the Twitter authentication URL from the JSON response
-            const twitterAuthUrl = response.data.twitterAuthUrl;
+    axios.get('twitterAuthUrl.json')
+    .then(response => {
+        const twitterAuthUrl = response.data.twitterAuthUrl;
 
-            // Redirect to the Twitter authentication URL
+        // Function to redirect to the Twitter authentication URL
+        function redirectToTwitter() {
             window.location.href = twitterAuthUrl;
-        })
-        .catch(error => {
-            // Handle errors as needed
-            console.error('Error initiating authentication:', error.message);
-        });
+        }
+
+        // Add event listener to the button for redirection
+        document.querySelector('button').addEventListener('click', redirectToTwitter);
+    })
+    .catch(error => {
+        console.error('Error reading Twitter Auth URL:', error);
+    });
 }
