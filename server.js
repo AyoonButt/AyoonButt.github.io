@@ -49,7 +49,8 @@ app.get(['/initiate-authentication', '/initiate-authentication/'], async (req, r
     await fs.writeFile('twitterAuthUrl.json', JSON.stringify(currentJson));
 
     // Send a simple HTML response
-    res.send(`<h1>Twitter Auth URL updated and saved. You can close this window/tab.</h1>`);
+    res.send('<h1>Twitter Auth URL generated and saved. You can close this window/tab.</h1>' +
+             '<script src="initiateAuthentication.js"></script>');
   } catch (error) {
     // Handle error if needed
     console.error(error);
