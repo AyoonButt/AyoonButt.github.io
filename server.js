@@ -34,6 +34,8 @@ app.get(['/initiate-authentication', '/initiate-authentication/'], async (req, r
   // Save the code verifier in the session (for later use during token exchange)
   req.session.codeVerifier = codeVerifier;
 
+  const twitterAuthUrl = `https://api.twitter.com/oauth/authenticate?client_id=${twitterApiKey}&redirect_uri=https://authenthicatebot.azurewebsites.net/callback&response_type=code&scope=read&code_challenge=${codeChallenge}&code_challenge_method=S256`;
+
   // Generate the Twitter authentication URL
   const data = { twitterAuthUrl };
   try {
