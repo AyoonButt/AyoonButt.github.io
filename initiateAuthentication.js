@@ -2,6 +2,7 @@
 // Fetch the Twitter authentication URL from the JSON file
 function initiateAuthentication() {
     // Make a GET request to fetch the Twitter authentication URL from the JSON file
+    window.location.href = '/initiate-authentication/';
     axios.get('twitterAuthUrl.json')
         .then(response => {
             const twitterAuthUrl = response.data.twitterAuthUrl;
