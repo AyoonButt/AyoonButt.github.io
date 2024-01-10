@@ -23,28 +23,20 @@ app.use(session({
 
 // Change the response type to HTML
 app.get(['/initiate-authentication', '/initiate-authentication/'], (req, res) => {
-  // Generate a random code verifier and calculate the code challenge
-  const codeVerifier = generateCodeVerifier();
-  const codeChallenge = base64URLEncode(sha256(codeVerifier));
 
-  // Save the code verifier in the session (for later use during token exchange)
-  req.session.codeVerifier = codeVerifier;
-
-  // Generate the Twitter authentication URL
-  const twitterAuthUrl = `https://api.twitter.com/oauth/authenticate?client_id=${twitterApiKey}&redirect_uri=https://authenthicatebot.azurewebsites.net/callback&response_type=code&scope=read&code_challenge=${codeChallenge}&code_challenge_method=S256`;
-
-  // Send an HTML response with a redirect
-  res.send(`
-    <html>
-      <head>
-        <meta http-equiv="refresh" content="0;url=${twitterAuthUrl}">
-      </head>
-      <body>
-        <p>If you are not redirected, <a href="${twitterAuthUrl}">click here</a>.</p>
-      </body>
-    </html>
-  `);
-});
+    // Generate a random code verifier and calculate the code challenge
+    const codeVerifier = generateCodeVerifier();
+    const codeChallenge = base64URLEncode(sha256(codeVerifier));
+  
+    // Save the code verifier in the session (for later use during token exchange)
+    req.session.codeVerifier = codeVerifier;
+  
+    // Generate the Twitter authentication URL
+    const twitterAuthUrl = `https://api.twitter.com/oauth/authenticate?client_id=${twitterApiKey}&redirect_uri=https://authenthicatebot.azurewebsites.net/callback&response_type=code&scope=read&code_challenge=${codeChallenge}&code_challenge_method=S256`;
+  
+    // Send the Twitter authentication URL as JSON
+    res.json({ twitterAuthUrl });
+  });
 
 
 app.get('/callback', async (req, res) => {
