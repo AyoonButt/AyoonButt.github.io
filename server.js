@@ -42,8 +42,8 @@ app.get(['/initiate-authentication', '/initiate-authentication/'], async (req, r
     const filePath = path.join(__dirname, 'twitterAuthUrl.json');
     await fs.writeFile(filePath, JSON.stringify({ twitterAuthUrl }));
 
-    // Redirect to the Twitter authentication URL
-    res.redirect(twitterAuthUrl);
+    res.sendStatus(204);
+
 } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
