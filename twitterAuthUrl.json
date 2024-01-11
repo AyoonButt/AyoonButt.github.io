@@ -1,4 +1,3 @@
 {
-    "twitterAuthUrl": "https://api.twitter.com/oauth/authenticate?client_id=%CLIENT_ID%&redirect_uri=https://authenthicatebot.azurewebsites.net/callback&response_type=code&scope=read&code_challenge=%CODE_CHALLENGE%&code_challenge_method=S256"
-  }
-  
+    "twitterAuthUrl": ""
+}

@@ -38,24 +38,16 @@ app.get(['/initiate-authentication', '/initiate-authentication/'], async (req, r
     // Generate the Twitter authentication URL
     const twitterAuthUrl = `https://api.twitter.com/oauth/authenticate?client_id=${twitterApiKey}&redirect_uri=https://authenthicatebot.azurewebsites.net/callback&response_type=code&scope=read&code_challenge=${codeChallenge}&code_challenge_method=S256`;
 
-    // Read the current content of the JSON file
-    const currentData = await fs.readFile('twitterAuthUrl.json', 'utf-8');
-    const currentJson = JSON.parse(currentData);
+    // Write the Twitter authentication URL directly to the JSON file, overwriting the previous content
+    const filePath = path.join(__dirname, 'twitterAuthUrl.json');
+    await fs.writeFile(filePath, JSON.stringify({ twitterAuthUrl }));
 
-    // Update the values in the JSON
-    currentJson.twitterAuthUrl = twitterAuthUrl;
-
-    // Write the modified content back to the same file
-    await fs.writeFile('twitterAuthUrl.json', JSON.stringify(currentJson));
-
-    // Send a simple HTML response
-    res.send('<h1>Twitter Auth URL generated and saved. You can close this window/tab.</h1>' +
-             '<script src="initiateAuthentication.js"></script>');
-  } catch (error) {
-    // Handle error if needed
+    // Redirect to the Twitter authentication URL
+    res.redirect(twitterAuthUrl);
+} catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
-  }
+}
 });
 
 
