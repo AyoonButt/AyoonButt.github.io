@@ -2,7 +2,7 @@
 
 function initiateAuthentication() {
     // Make a GET request to fetch the Twitter authentication URL from the server
-    axios.get('initiate-authentication')
+    axios.get('/initiate-authentication/')
         .then(response => {
             const twitterAuthUrl = response.data;
 
