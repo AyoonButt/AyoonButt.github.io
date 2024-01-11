@@ -57,12 +57,6 @@ app.get('/callback', async (req, res) => {
   // Store the authorization code globally
   authorizationCode = code;
 
-  // Render a simple HTML response
-  res.send(`
-        <h1>Authorization code received. You can close this window/tab.</h1>
-        <pre>${JSON.stringify({ message: 'Authorization code received. You can close this window/tab.' }, null, 2)}</pre>
-    `);
-
   // Now you can send the authorization code to the bot (you need to implement this part)
   sendAuthorizationCodeToBot(authorizationCode);
 });
