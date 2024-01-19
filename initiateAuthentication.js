@@ -2,20 +2,26 @@
 
 function initiateAuthentication() {
     // Make a GET request to fetch the Twitter authentication URL from the server
-    fetch('/initiate-authentication')
+    axios.get('<backend-origin>/initiate-authentication/') // Replace '<backend-origin>' with the actual URL of your backend
         .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            const twitterAuthUrl = data.twitterAuthUrl;
+            // Check if the response contains JSON data
+            if (response.headers['content-type'] && response.headers['content-type'].includes('application/json')) {
+                const twitterAuthUrl = response.data.twitterAuthUrl;
 
-            // Redirect to the Twitter authentication URL
-            window.location.href = twitterAuthUrl;
+                // Function to redirect to the Twitter authentication URL
+                function redirectToTwitter() {
+                    window.location.href = twitterAuthUrl;
+                }
+
+                // Add event listener to the button for redirection
+                document.getElementById('authButton').addEventListener('click', redirectToTwitter);
+            } else {
+                // Handle unexpected content type
+                console.error('Unexpected content type in the response:', response.headers['content-type']);
+            }
         })
         .catch(error => {
+            // Handle other errors
             console.error('Error initiating Twitter authentication:', error);
         });
 }
