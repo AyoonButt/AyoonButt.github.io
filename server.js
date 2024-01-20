@@ -7,9 +7,11 @@ const config = require('./data/config.js');
 
 const port = config.server.port;
 
+const app = express();
+
 app.use(express.json());
 
-app.use(express.static('public', { index: false })); // Disable index.html serving
+app.use(express.static('.', { index: false })); // Disable index.html serving
 
 // Access your Twitter API keys
 const twitterApiKey = config.twitterApi.apiKey;
