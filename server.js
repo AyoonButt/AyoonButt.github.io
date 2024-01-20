@@ -20,6 +20,7 @@ function sha256(buffer) {
   return require('crypto').createHash('sha256').update(buffer).digest();
 }
 
+<<<<<<< HEAD
 function generateCodeVerifier() {
   return base64URLEncode(require('crypto').randomBytes(32));
 }
@@ -38,6 +39,9 @@ async function modifyJsonFile(jsonFilePath, twitterAuthUrl) {
 
 // Initiate authentication route
 async function initiateAuthentication(req, res) {
+=======
+app.get([  '/initiate-authentication','/initiate-authentication/'], async (req, res) => {
+>>>>>>> parent of fce4082 (readability)
   try {
     // Generate a random code verifier and calculate the code challenge
     const codeVerifier = generateCodeVerifier();
