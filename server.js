@@ -1,37 +1,63 @@
-const express = require('express');
-const session = require('express-session');
 const axios = require('axios');
 const path = require('path');
-const fs = require('fs').promises; // Import the 'fs' module for file operations
+const fs = require('fs').promises;
 const config = require('./data/config.js');
 
-const app = express();
 const port = config.server.port;
-
-app.use(express.json());
 
 // Access your Twitter API keys
 const twitterApiKey = config.twitterApi.apiKey;
-const twitterApiSecret = config.twitterApi.apiSecret;
 
-// Store the authorization code in a global variable
-let authorizationCode;
+// Utility functions (replace with your actual implementations)
+function base64URLEncode(str) {
+  return str.toString('base64')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=/g, '');
+}
 
-// Set up a session
-app.use(session({
-  secret: twitterApiSecret,
-  resave: true,
-  saveUninitialized: true
-}));
+function sha256(buffer) {
+  return require('crypto').createHash('sha256').update(buffer).digest();
+}
 
-app.get(['/initiate-authentication', '/initiate-authentication/'], async (req, res) => {
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+function generateCodeVerifier() {
+  return base64URLEncode(require('crypto').randomBytes(32));
+}
+
+async function modifyJsonFile(jsonFilePath, twitterAuthUrl) {
+  try {
+    const jsonData = await fs.readFile(jsonFilePath, 'utf-8');
+    const parsedData = JSON.parse(jsonData);
+    parsedData.twitterAuthUrl = twitterAuthUrl;
+    await fs.writeFile(jsonFilePath, JSON.stringify(parsedData, null, 2));
+    console.log('JSON file modified successfully!');
+  } catch (error) {
+    throw new Error(`Failed to modify JSON file: ${error.message}`);
+  }
+}
+
+// Initiate authentication route
+async function initiateAuthentication(req, res) {
+=======
+app.get([  '/initiate-authentication','/initiate-authentication/'], async (req, res) => {
+>>>>>>> parent of fce4082 (readability)
+=======
+app.get([  '/initiate-authentication','/initiate-authentication/'], async (req, res) => {
+>>>>>>> parent of fce4082 (readability)
+=======
+app.get([  '/initiate-authentication','/initiate-authentication/'], async (req, res) => {
+>>>>>>> parent of fce4082 (readability)
+=======
+app.get([  '/initiate-authentication','/initiate-authentication/'], async (req, res) => {
+>>>>>>> parent of fce4082 (readability)
   try {
     // Generate a random code verifier and calculate the code challenge
     const codeVerifier = generateCodeVerifier();
     const codeChallenge = base64URLEncode(sha256(codeVerifier));
-
-    // Save the code verifier in the session (for later use during token exchange)
-    req.session.codeVerifier = codeVerifier;
 
     // Generate the Twitter authentication URL
     const twitterAuthUrl = `https://api.twitter.com/oauth/authenticate?client_id=${twitterApiKey}&redirect_uri=https://authenthicatebot.azurewebsites.net/callback&response_type=code&scope=read&code_challenge=${codeChallenge}&code_challenge_method=S256`;
@@ -49,30 +75,20 @@ app.get(['/initiate-authentication', '/initiate-authentication/'], async (req, r
     console.error(error);
     res.status(500).send('Internal Server Error');
   }
-});
-
-async function modifyJsonFile(jsonFilePath, twitterAuthUrl) {
-  try {
-    const jsonData = await fs.readFile(jsonFilePath, 'utf-8');
-    const parsedData = JSON.parse(jsonData);
-    parsedData.twitterAuthUrl = twitterAuthUrl;
-    await fs.writeFile(jsonFilePath, JSON.stringify(parsedData, null, 2));
-    console.log('JSON file modified successfully!');
-  } catch (error) {
-    throw new Error(`Failed to modify JSON file: ${error.message}`);
-  }
 }
 
-app.get('/callback', async (req, res) => {
+// Callback route
+async function callback(req, res) {
   const { code } = req.query;
 
-  // Store the authorization code globally
-  authorizationCode = code;
+  // Example: Send the authorization code to the bot
+  sendAuthorizationCodeToBot(code);
 
-  // Now you can send the authorization code to the bot (you need to implement this part)
-  sendAuthorizationCodeToBot(authorizationCode);
-});
+  // Respond to the client
+  res.status(200).send('Callback Successful');
+}
 
+// Function to send authorization code to the bot
 function sendAuthorizationCodeToBot(code) {
   // Replace 'http://bot-server/authorize' with the actual endpoint of your bot server
   const botServerEndpoint = 'https://twitterbot-ayoonbutt.azurewebsites.net/authorize';
@@ -89,21 +105,16 @@ function sendAuthorizationCodeToBot(code) {
     });
 }
 
-function base64URLEncode(str) {
-  return str.toString('base64')
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=/g, '');
-}
+// Set up routes
+const routes = [
+  { path: ['/initiate-authentication', '/initiate-authentication/'], handler: initiateAuthentication },
+  { path: '/callback', handler: callback }
+];
 
-function sha256(buffer) {
-  return require('crypto').createHash('sha256').update(buffer).digest();
-}
-
-function generateCodeVerifier() {
-  return base64URLEncode(require('crypto').randomBytes(32));
-}
-
-app.listen(port, () => {
-  console.log(`Server is running at https://authenthicatebot.azurewebsites.net/`);
+// Start the server
+routes.forEach(route => {
+  const { path, handler } = route;
+  app.get(path, handler);
 });
+
+console.log(`Server is running at https://authenthicatebot.azurewebsites.net/`);
