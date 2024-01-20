@@ -1,6 +1,7 @@
 // initiateAuthentication.js
 
-function initiateAuthentication() {
+function initiateAuthentication(event) {
+  event.preventDefault();
   axios.get('/initiate-authentication/')
     .then(response => {
       if (!response.ok) {
