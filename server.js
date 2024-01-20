@@ -3,7 +3,7 @@ const session = require('express-session');
 const axios = require('axios');
 const path = require('path');
 const fs = require('fs').promises; // Import the 'fs' module for file operations
-const config = require('./config.js');
+const config = require('./data/config.js');
 
 const app = express();
 const port = config.server.port;
@@ -24,9 +24,7 @@ app.use(session({
   saveUninitialized: true
 }));
 
-// Change the response type to JSON
 app.get(['/initiate-authentication', '/initiate-authentication/'], async (req, res) => {
-
   try {
     // Generate a random code verifier and calculate the code challenge
     const codeVerifier = generateCodeVerifier();
@@ -38,12 +36,23 @@ app.get(['/initiate-authentication', '/initiate-authentication/'], async (req, r
     // Generate the Twitter authentication URL
     const twitterAuthUrl = `https://api.twitter.com/oauth/authenticate?client_id=${twitterApiKey}&redirect_uri=https://authenthicatebot.azurewebsites.net/callback&response_type=code&scope=read&code_challenge=${codeChallenge}&code_challenge_method=S256`;
 
-    // Write the Twitter authentication URL directly to the JSON file, overwriting the previous content
-    const jsonFilePath = './twitterAuthUrl.json';
-    await fs.writeFile(jsonFilePath, JSON.stringify({ twitterAuthUrl }));
+    // Define the path to the JSON file in the 'data' folder
+    const jsonFilePath = path.join(__dirname, 'data', 'twitterAuthUrl.json');
 
-    // Send the JSON content in the response
-    res.json({ twitterAuthUrl });
+    // Read the existing JSON content from the 'data' folder
+    const jsonData = await fs.readFile(jsonFilePath, 'utf-8');
+
+    // Parse the JSON content
+    const parsedData = JSON.parse(jsonData);
+
+    // Update the 'twitterAuthUrl' property with the new value
+    parsedData.twitterAuthUrl = twitterAuthUrl;
+
+    // Write the updated JSON content back to the file
+    await fs.writeFile(jsonFilePath, JSON.stringify(parsedData, null, 2));
+
+    // Send the updated JSON content in the response
+    res.json(parsedData);
 
   } catch (error) {
     console.error(error);
