@@ -1,16 +1,3 @@
-const express = require('express');
-const session = require('express-session');
-const axios = require('axios');
-const path = require('path');
-const fs = require('fs').promises; // Import the 'fs' module for file operations
-const config = require('./data/config.js');
-
-const port = config.server.port;
-
-const app = express();
-
-app.use(express.json());
-
 
 // Access your Twitter API keys
 const twitterApiKey = config.twitterApi.apiKey;
@@ -109,3 +96,17 @@ function generateCodeVerifier() {
 app.listen(port, () => {
   console.log(`Server is running at https://authenthicatebot.azurewebsites.net/`);
 });
+
+const express = require('express');
+const session = require('express-session');
+const axios = require('axios');
+const path = require('path');
+const fs = require('fs').promises; // Import the 'fs' module for file operations
+const config = require('./data/config.js');
+
+const port = config.server.port;
+
+const app = express();
+
+app.use(express.json());
+
