@@ -1,7 +1,7 @@
 // initiateAuthentication.js
 
 function initiateAuthentication() {
-  fetch('/initiate-authentication/')
+  axios.get('/initiate-authentication/')
     .then(response => {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
