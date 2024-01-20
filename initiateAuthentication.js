@@ -3,19 +3,19 @@
 function initiateAuthentication(event) {
   event.preventDefault();
   axios.get('/initiate-authentication/')
-    
     .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      // Check for 204 response (No Content)
-      if (response.status === 204) {
-        console.log('Twitter authentication URL saved successfully.');
-        // Proceed with redirection logic (assuming the URL is now in the JSON file)
-        retrieveTwitterAuthUrlAndRedirect();
+      // Check for a successful response (status code 2xx)
+      if (response.status >= 200 && response.status < 300) {
+        // Check for 204 response (No Content)
+        if (response.status === 204) {
+          console.log('Twitter authentication URL saved successfully.');
+          // Proceed with redirection logic (assuming the URL is now in the JSON file)
+          retrieveTwitterAuthUrlAndRedirect();
+        } else {
+          throw new Error(`Unexpected response status: ${response.status}`);
+        }
       } else {
-        throw new Error(`Unexpected response status: ${response.status}`);
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
     })
     .catch(error => {
@@ -25,11 +25,10 @@ function initiateAuthentication(event) {
 }
 
 function retrieveTwitterAuthUrlAndRedirect() {
-  // Read the Twitter auth URL from the JSON file
-  fetch('/data/twitterAuthUrl') // Replace with the correct path
-    .then(response => response.json())
-    .then(data => {
-      const twitterAuthUrl = data.twitterAuthUrl;
+  // Read the Twitter auth URL from the JSON file using Axios
+  axios.get('/data/twitterAuthUrl') // Replace with the correct path
+    .then(response => {
+      const twitterAuthUrl = response.data.twitterAuthUrl;
       if (twitterAuthUrl) {
         window.location.href = twitterAuthUrl;
       } else {
