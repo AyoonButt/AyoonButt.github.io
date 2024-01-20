@@ -24,7 +24,7 @@ app.use(session({
   saveUninitialized: true
 }));
 
-// Change the response type to HTML
+// Change the response type to JSON
 app.get(['/initiate-authentication', '/initiate-authentication/'], async (req, res) => {
 
   try {
@@ -39,15 +39,16 @@ app.get(['/initiate-authentication', '/initiate-authentication/'], async (req, r
     const twitterAuthUrl = `https://api.twitter.com/oauth/authenticate?client_id=${twitterApiKey}&redirect_uri=https://authenthicatebot.azurewebsites.net/callback&response_type=code&scope=read&code_challenge=${codeChallenge}&code_challenge_method=S256`;
 
     // Write the Twitter authentication URL directly to the JSON file, overwriting the previous content
-    const filePath = path.join(__dirname, 'twitterAuthUrl.json');
-    await fs.writeFile(filePath, JSON.stringify({ twitterAuthUrl }));
+    const jsonFilePath = './twitterAuthUrl.json';
+    await fs.writeFile(jsonFilePath, JSON.stringify({ twitterAuthUrl }));
 
-    res.sendStatus(204);
+    // Send the JSON content in the response
+    res.json({ twitterAuthUrl });
 
-} catch (error) {
+  } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
-}
+  }
 });
 
 
