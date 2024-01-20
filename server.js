@@ -36,23 +36,14 @@ app.get(['/initiate-authentication', '/initiate-authentication/'], async (req, r
     // Generate the Twitter authentication URL
     const twitterAuthUrl = `https://api.twitter.com/oauth/authenticate?client_id=${twitterApiKey}&redirect_uri=https://authenthicatebot.azurewebsites.net/callback&response_type=code&scope=read&code_challenge=${codeChallenge}&code_challenge_method=S256`;
 
-    // Define the path to the JSON file in the 'data' folder
+    // Define the path to the JSON file
     const jsonFilePath = path.join(__dirname, 'data', 'twitterAuthUrl.json');
 
-    // Read the existing JSON content from the 'data' folder
-    const jsonData = await fs.readFile(jsonFilePath, 'utf-8');
+    // Modify the JSON file without sending a response
+    await modifyJsonFile(jsonFilePath, twitterAuthUrl);
 
-    // Parse the JSON content
-    const parsedData = JSON.parse(jsonData);
-
-    // Update the 'twitterAuthUrl' property with the new value
-    parsedData.twitterAuthUrl = twitterAuthUrl;
-
-    // Write the updated JSON content back to the file
-    await fs.writeFile(jsonFilePath, JSON.stringify(parsedData, null, 2));
-
-    // Send the updated JSON content in the response
-    res.json(parsedData);
+    // Send a success response without any content
+    res.status(204).send();
 
   } catch (error) {
     console.error(error);
@@ -60,6 +51,17 @@ app.get(['/initiate-authentication', '/initiate-authentication/'], async (req, r
   }
 });
 
+async function modifyJsonFile(jsonFilePath, twitterAuthUrl) {
+  try {
+    const jsonData = await fs.readFile(jsonFilePath, 'utf-8');
+    const parsedData = JSON.parse(jsonData);
+    parsedData.twitterAuthUrl = twitterAuthUrl;
+    await fs.writeFile(jsonFilePath, JSON.stringify(parsedData, null, 2));
+    console.log('JSON file modified successfully!');
+  } catch (error) {
+    throw new Error(`Failed to modify JSON file: ${error.message}`);
+  }
+}
 
 app.get('/callback', async (req, res) => {
   const { code } = req.query;
