@@ -23,6 +23,7 @@ function sha256(buffer) {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 function generateCodeVerifier() {
   return base64URLEncode(require('crypto').randomBytes(32));
 }
@@ -41,6 +42,9 @@ async function modifyJsonFile(jsonFilePath, twitterAuthUrl) {
 
 // Initiate authentication route
 async function initiateAuthentication(req, res) {
+=======
+app.get([  '/initiate-authentication','/initiate-authentication/'], async (req, res) => {
+>>>>>>> parent of fce4082 (readability)
 =======
 app.get([  '/initiate-authentication','/initiate-authentication/'], async (req, res) => {
 >>>>>>> parent of fce4082 (readability)
