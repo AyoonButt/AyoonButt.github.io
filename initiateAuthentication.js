@@ -26,7 +26,7 @@ function initiateAuthentication(event) {
 
 function retrieveTwitterAuthUrlAndRedirect() {
   // Read the Twitter auth URL from the JSON file using Axios
-  axios.get('/data/twitterAuthUrl') // Replace with the correct path
+  axios.get('./data/twitterAuthUrl') // Replace with the correct path
     .then(response => {
       const twitterAuthUrl = response.data.twitterAuthUrl;
       if (twitterAuthUrl) {
