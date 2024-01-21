@@ -43,6 +43,7 @@ app.get([ '/initiate-authentication/'], async (req, res) => {
     await modifyJsonFile(jsonFilePath, twitterAuthUrl);
 
     // Send a success response without any content
+    res.setHeader('Cache-Control', 'no-store');
     res.status(204).send();
 
   } catch (error) {

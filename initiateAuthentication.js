@@ -2,9 +2,8 @@
 
 function initiateAuthentication(event) {
   event.preventDefault();
-  res.setHeader('Cache-Control', 'no-store');
-  axios.get('/initiate-authentication/')
-    .then(response => {
+  axios.get('/initiate-authentication/', { params: { nocache: Date.now() } })
+  .then(response => {
       // Check for a successful response (status code 2xx)
       if (response.status >= 200 && response.status < 300) {
         // Check for 204 response (No Content)
