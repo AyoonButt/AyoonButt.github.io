@@ -2,6 +2,7 @@
 
 function initiateAuthentication(event) {
   event.preventDefault();
+  res.setHeader('Cache-Control', 'no-store');
   axios.get('/initiate-authentication/')
     .then(response => {
       // Check for a successful response (status code 2xx)
