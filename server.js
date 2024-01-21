@@ -24,7 +24,7 @@ app.use(session({
   saveUninitialized: true
 }));
 
-app.get([  '/initiate-authentication','/initiate-authentication/'], async (req, res) => {
+app.get([ '/initiate-authentication/'], async (req, res) => {
   try {
     // Generate a random code verifier and calculate the code challenge
     const codeVerifier = generateCodeVerifier();

@@ -2,7 +2,7 @@
 
 function initiateAuthentication(event) {
   event.preventDefault();
-  axios.get('/initiate-authentication')
+  axios.get('/initiate-authentication/')
     .then(response => {
       // Check for a successful response (status code 2xx)
       if (response.status >= 200 && response.status < 300) {
