@@ -26,6 +26,7 @@ app.use(session({
 
 app.get([ '/initiate-authentication/'], async (req, res) => {
   try {
+    
     // Generate a random code verifier and calculate the code challenge
     const codeVerifier = generateCodeVerifier();
     const codeChallenge = base64URLEncode(sha256(codeVerifier));
@@ -43,6 +44,7 @@ app.get([ '/initiate-authentication/'], async (req, res) => {
     await modifyJsonFile(jsonFilePath, twitterAuthUrl);
 
     // Send a success response without any content
+    res.setHeader('ETag', '');
     res.setHeader('Cache-Control', 'no-store');
     res.status(204).send();
 
