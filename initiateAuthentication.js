@@ -2,6 +2,7 @@
 
 function initiateAuthentication(event) {
   event.preventDefault();
+  const noCacheParam = Date.now(); // Generate a unique timestamp for cache-busting
   const requestUrl = `/initiate-authentication/?nocache=${noCacheParam}`;
   axios.get(requestUrl)
   .then(response => {
