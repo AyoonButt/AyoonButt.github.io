@@ -45,7 +45,7 @@ app.get([ '/initiate-authentication/'], async (req, res) => {
 
     // Send a success response without any content
     res.setHeader('ETag', '');
-    res.setHeader('Cache-Control', 'no-store');
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
     res.status(204).send();
 
   } catch (error) {
