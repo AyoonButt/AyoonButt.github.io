@@ -2,7 +2,8 @@
 
 function initiateAuthentication(event) {
   event.preventDefault();
-  axios.get('/initiate-authentication/', { params: { nocache: Date.now() } })
+  const requestUrl = `/initiate-authentication/?nocache=${noCacheParam}`;
+  axios.get(requestUrl)
   .then(response => {
       // Check for a successful response (status code 2xx)
       if (response.status >= 200 && response.status < 300) {
