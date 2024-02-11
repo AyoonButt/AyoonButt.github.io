@@ -6,6 +6,11 @@ const fs = require('fs').promises;
 const config = require('../data/config.js');
 
 const app = express();
+const staticAssetsPath = path.join(__dirname, 'public'); // Adjust based on your directory structure
+
+// Serve static files using Express middleware
+app.use(express.static(staticAssetsPath));
+
 const port = config.server.port;
 
 app.use(express.json());
