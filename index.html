@@ -20,7 +20,7 @@
         }
 
         // Redirect to Twitter authorization page
-        const redirectUrl = await response.text();
+        const redirectUrl = await response.html();
         window.location.href = redirectUrl;
       } catch (error) {
         console.error(error);
