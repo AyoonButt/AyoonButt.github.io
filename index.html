@@ -1,19 +1,32 @@
-<!-- index.html -->
-
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Twitter Bot Authentication</title>
-
-    <!-- Include the initiateAuthentication.js file -->
-    <script src="initiateAuthentication.js"></script>
-     <!-- Include Axios script for handling callback -->
-     <script src="node_modules/axios/dist/axios.min.js"></script>
+  <title>Twitter Bot Authentication</title>
 </head>
 <body>
-    <h1>Welcome to the Twitter Bot Authentication</h1>
-    <button onclick="initiateAuthentication()">Authenticate with Twitter</button>
+  <button id="authenticateBtn">Connect to Twitter</button>
+
+  <script>
+    const authenticateBtn = document.getElementById('authenticateBtn');
+
+    authenticateBtn.addEventListener('click', async () => {
+      try {
+        // Initiate authentication on server
+        const response = await fetch('/initiate-authentication');
+
+        // Check for successful response
+        if (!response.ok) {
+          throw new Error('Error initiating authentication');
+        }
+
+        // Redirect to Twitter authorization page
+        const redirectUrl = await response.text();
+        window.location.href = redirectUrl;
+      } catch (error) {
+        console.error(error);
+        alert('Authentication failed: ' + error.message);
+      }
+    });
+  </script>
 </body>
 </html>
