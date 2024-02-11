@@ -3,7 +3,7 @@ const session = require('express-session');
 const axios = require('axios');
 const path = require('path');
 const fs = require('fs').promises;
-const config = require('./data/config.js');
+const config = require('../data/config.js');
 
 const app = express();
 const port = config.server.port;
