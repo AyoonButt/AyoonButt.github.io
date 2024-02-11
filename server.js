@@ -32,6 +32,7 @@ app.get('/initiate-authentication/', async (req, res) => {
     const twitterAuthUrl = `https://api.twitter.com/oauth/authenticate?client_id=${twitterApiKey}&redirect_uri=https://authenthicatebot.azurewebsites.net/callback&response_type=code&scope=read&code_challenge=${codeChallenge}&code_challenge_method=S256&state=${state}`;
 
     // Redirect to the Twitter authorization URL
+    console.log(twitterAuthUrl)
     res.redirect(twitterAuthUrl);
   } catch (error) {
     console.error(error);
