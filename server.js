@@ -10,6 +10,9 @@ const port = config.server.port;
 
 app.use(express.json());
 
+app.get('/initiate-authentication/', twitterRedirectMiddleware);
+
+
 const twitterApiKey = config.twitterApi.apiKey;
 const twitterApiSecret = config.twitterApi.apiSecret;
 
@@ -19,26 +22,29 @@ app.use(session({
   saveUninitialized: true
 }));
 
-app.get('/initiate-authentication/', async (req, res) => {
+// middleware for handling Twitter authentication redirects
+const twitterRedirectMiddleware = async (req, res, next) => {
   try {
+    // Generate code verifier, code challenge, and state
     const codeVerifier = generateCodeVerifier();
     const codeChallenge = base64URLEncode(sha256(codeVerifier));
-    const state = generateRandomString(32); // Change the length as needed
+    const state = generateRandomString(32);
 
-    // Save the code verifier and state in the session
+    // Save in session
     req.session.codeVerifier = codeVerifier;
     req.session.state = state;
 
+    // Construct Twitter authorization URL
     const twitterAuthUrl = `https://api.twitter.com/oauth/authenticate?client_id=${twitterApiKey}&redirect_uri=https://authenthicatebot.azurewebsites.net/callback&response_type=code&scope=read&code_challenge=${codeChallenge}&code_challenge_method=S256&state=${state}`;
 
-    // Redirect to the Twitter authorization URL
-    console.log(twitterAuthUrl)
+    // Redirect to Twitter
     res.redirect(twitterAuthUrl);
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
   }
-});
+};
+
 
 
 app.get('/callback', async (req, res) => {
