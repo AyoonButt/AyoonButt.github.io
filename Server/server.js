@@ -16,11 +16,6 @@ const port = config.server.port;
 
 app.use(express.json());
 
-app.use(session({
-  secret: twitterApiSecret,
-  resave: true,
-  saveUninitialized: true
-}));
 
 // Custom middleware for authentication
 const authenticateUser = (req, res, next) => {
