@@ -2,7 +2,7 @@ const express = require('express');
 const session = require('express-session');
 const axios = require('axios');
 const path = require('path');
-const fs = require('fs').promises; // Import the 'fs' module for file operations
+const fs = require('fs').promises;
 const config = require('./data/config.js');
 
 const app = express();
@@ -10,78 +10,51 @@ const port = config.server.port;
 
 app.use(express.json());
 
-// Access your Twitter API keys
 const twitterApiKey = config.twitterApi.apiKey;
 const twitterApiSecret = config.twitterApi.apiSecret;
 
-// Store the authorization code in a global variable
-let authorizationCode;
-
-// Set up a session
 app.use(session({
   secret: twitterApiSecret,
   resave: true,
   saveUninitialized: true
 }));
 
-app.get([ '/initiate-authentication/'], async (req, res) => {
+app.get('/initiate-authentication/', async (req, res) => {
   try {
-    
-    // Generate a random code verifier and calculate the code challenge
     const codeVerifier = generateCodeVerifier();
     const codeChallenge = base64URLEncode(sha256(codeVerifier));
+    const state = generateRandomString(32); // Change the length as needed
 
-    // Save the code verifier in the session (for later use during token exchange)
+    // Save the code verifier and state in the session
     req.session.codeVerifier = codeVerifier;
+    req.session.state = state;
 
-    // Generate the Twitter authentication URL
-    const twitterAuthUrl = `https://api.twitter.com/oauth/authenticate?client_id=${twitterApiKey}&redirect_uri=https://authenthicatebot.azurewebsites.net/callback&response_type=code&scope=read&code_challenge=${codeChallenge}&code_challenge_method=S256`;
+    const twitterAuthUrl = `https://api.twitter.com/oauth/authenticate?client_id=${twitterApiKey}&redirect_uri=https://authenthicatebot.azurewebsites.net/callback&response_type=code&scope=read&code_challenge=${codeChallenge}&code_challenge_method=S256&state=${state}`;
 
-    // Define the path to the JSON file
-    const jsonFilePath = path.join(__dirname, 'data', 'twitterAuthUrl.json');
-
-    // Modify the JSON file without sending a response
-    await modifyJsonFile(jsonFilePath, twitterAuthUrl);
-
-    // Send a success response without any content
-    res.setHeader('ETag', '');
-    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
-    res.status(204).send();
-
+    // Redirect to the Twitter authorization URL
+    res.redirect(twitterAuthUrl);
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
   }
 });
 
-async function modifyJsonFile(jsonFilePath, twitterAuthUrl) {
-  try {
-    const jsonData = await fs.readFile(jsonFilePath, 'utf-8');
-    const parsedData = JSON.parse(jsonData);
-    parsedData.twitterAuthUrl = twitterAuthUrl;
-    await fs.writeFile(jsonFilePath, JSON.stringify(parsedData, null, 2));
-    console.log('JSON file modified successfully!');
-  } catch (error) {
-    throw new Error(`Failed to modify JSON file: ${error.message}`);
-  }
-}
 
 app.get('/callback', async (req, res) => {
-  const { code } = req.query;
+  const { code, state } = req.query;
 
-  // Store the authorization code globally
-  authorizationCode = code;
+  // Retrieve the code verifier from the session
+  const codeVerifier = req.session.codeVerifier;
 
-  // Now you can send the authorization code to the bot (you need to implement this part)
-  sendAuthorizationCodeToBot(authorizationCode);
+  // Now you can send the authorization code and code verifier to the bot
+  sendAuthorizationDataToBot({ code, codeVerifier, state });
 });
 
-function sendAuthorizationCodeToBot(code) {
-  // Replace 'http://bot-server/authorize' with the actual endpoint of your bot server
+function sendAuthorizationDataToBot({ code, codeVerifier, state }) {
   const botServerEndpoint = 'https://twitterbot-ayoonbutt.azurewebsites.net/authorize';
 
-  // Make a POST request to the bot server to send the authorization code
-  axios.post(botServerEndpoint, { code })
+  // Make a POST request to the bot server to send the authorization code and code verifier
+  axios.post(botServerEndpoint, { code, codeVerifier, state })
     .then(response => {
       console.log(response.data);
       // Handle success if needed
