@@ -30,7 +30,7 @@ app.use(session({
 // middleware for handling Twitter authentication redirects
 const twitterRedirectMiddleware = async (req, res, next) => {
   try {
-    /* Generate code verifier, code challenge, and state
+    // Generate code verifier, code challenge, and state
     const codeVerifier = generateCodeVerifier();
     const codeChallenge = base64URLEncode(sha256(codeVerifier));
     const state = generateRandomString(32);
@@ -39,7 +39,7 @@ const twitterRedirectMiddleware = async (req, res, next) => {
     req.session.codeVerifier = codeVerifier;
     req.session.state = state;
 
-    // Construct Twitter authorization URL */
+    // Construct Twitter authorization URL 
     const twitterAuthUrl = `https://api.twitter.com/oauth/authenticate?client_id=${twitterApiKey}&redirect_uri=https://authenthicatebot.azurewebsites.net/callback&response_type=code&scope=read&code_challenge=${codeChallenge}&code_challenge_method=S256&state=${state}`;
 
     // Redirect to Twitter
