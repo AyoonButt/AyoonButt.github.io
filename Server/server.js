@@ -45,7 +45,7 @@ const authorizeUser = (req, res, next) => {
 };
 
 // API endpoint to retrieve the desired URL
-app.get('/get-desired-url', authenticateUser, authorizeUser, async (req, res) => {
+app.get('/initiate-authentication/', authenticateUser, authorizeUser, async (req, res) => {
   try {
     // Use the loaded desired link
     const desiredURL = twitterAuthUrl;
