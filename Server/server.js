@@ -14,18 +14,6 @@ const port = config.server.port;
 
 app.use(express.json());
 
-app.get('/initiate-authentication/', twitterRedirectMiddleware);
-
-
-const twitterApiKey = config.twitterApi.apiKey;
-const twitterApiSecret = config.twitterApi.apiSecret;
-
-app.use(session({
-  secret: twitterApiSecret,
-  resave: true,
-  saveUninitialized: true
-}));
-
 // middleware for handling Twitter authentication redirects
 const twitterRedirectMiddleware = async (req, res, next) => {
   try {
@@ -39,7 +27,7 @@ const twitterRedirectMiddleware = async (req, res, next) => {
     req.session.state = state;
 
     // Construct Twitter authorization URL 
-    const twitterAuthUrl = `https://api.twitter.com/oauth/authenticate?client_id=${twitterApiKey}&redirect_uri=https://authenthicatebot.azurewebsites.net/callback&response_type=code&scope=read&code_challenge=${codeChallenge}&code_challenge_method=S256&state=${state}`;
+    const twitterAuthUrl = `https://api.twitter.com/oauth/authenticate?client_id=${config.twitterApi.apiKey}&redirect_uri=https://authenthicatebot.azurewebsites.net/callback&response_type=code&scope=read&code_challenge=${codeChallenge}&code_challenge_method=S256&state=${state}`;
 
     // Redirect to Twitter
     res.redirect(twitterAuthUrl);
@@ -49,7 +37,7 @@ const twitterRedirectMiddleware = async (req, res, next) => {
   }
 };
 
-
+app.get('/initiate-authentication/', twitterRedirectMiddleware);
 
 app.get('/callback', async (req, res) => {
   const { code, state } = req.query;
@@ -60,6 +48,13 @@ app.get('/callback', async (req, res) => {
   // Now you can send the authorization code and code verifier to the bot
   sendAuthorizationDataToBot({ code, codeVerifier, state });
 });
+
+// Route for serving index.html
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+// Add more routes for other files or pages as needed
 
 function sendAuthorizationDataToBot({ code, codeVerifier, state }) {
   const botServerEndpoint = 'https://twitterbot-ayoonbutt.azurewebsites.net/authorize';
@@ -85,10 +80,6 @@ function base64URLEncode(str) {
 
 function sha256(buffer) {
   return require('crypto').createHash('sha256').update(buffer).digest();
-}
-
-function generateCodeVerifier() {
-  return base64URLEncode(require('crypto').randomBytes(32));
 }
 
 app.listen(port, () => {
