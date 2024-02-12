@@ -3,8 +3,7 @@ const session = require('express-session');
 const axios = require('axios');
 const path = require('path');
 const fs = require('fs').promises;
-const twitterAuthUrl = require('../data/link.js');
-const config = require('../data/config.js'); // Import the configuration
+const config = require('../data/config.js');
 
 const app = express();
 const staticAssetsPath = path.join(__dirname, 'public'); // Adjust based on your directory structure
@@ -14,44 +13,46 @@ app.use(express.static(staticAssetsPath));
 
 const port = config.server.port;
 
-// Custom middleware for authentication
-const authenticateUser = (req, res, next) => {
-  // Implement your authentication logic here
-  // Example: Check if the user is logged in based on session or tokens
-  if (req.isAuthenticated()) {
-    return next(); // User is authenticated, proceed to the next middleware or route handler
-  } else {
-    return res.status(401).json({ error: 'Unauthorized' }); // User is not authenticated
-  }
-};
+app.use(express.json());
 
-// Custom middleware for authorization
-const authorizeUser = (req, res, next) => {
-  // Implement your authorization logic here
-  // Example: Check if the user has the necessary role or permission
-  if (req.user && req.user.role === 'admin') {
-    return next(); // User is authorized, proceed to the next middleware or route handler
-  } else {
-    return res.status(403).json({ error: 'Forbidden' }); // User does not have the required permission
-  }
-};
+app.get('/initiate-authentication/', twitterRedirectMiddleware);
 
-// API endpoint to retrieve the desired URL
-app.get('/initiate-authentication/', authenticateUser, authorizeUser, async (req, res) => {
+
+const twitterApiKey = config.twitterApi.apiKey;
+const twitterApiSecret = config.twitterApi.apiSecret;
+
+app.use(session({
+  secret: twitterApiSecret,
+  resave: true,
+  saveUninitialized: true
+}));
+
+// middleware for handling Twitter authentication redirects
+const twitterRedirectMiddleware = async (req, res, next) => {
   try {
-    // Use the loaded desired link
-    const desiredURL = twitterAuthUrl;
+    // Generate code verifier, code challenge, and state
+    const codeVerifier = generateCodeVerifier();
+    const codeChallenge = base64URLEncode(sha256(codeVerifier));
+    const state = generateRandomString(32);
 
-    // Return the URL as a response
-    res.json({ url: desiredURL });
+    // Save in session
+    req.session.codeVerifier = codeVerifier;
+    req.session.state = state;
+
+    // Construct Twitter authorization URL 
+    const twitterAuthUrl = `https://api.twitter.com/oauth/authenticate?client_id=${twitterApiKey}&redirect_uri=https://authenthicatebot.azurewebsites.net/callback&response_type=code&scope=read&code_challenge=${codeChallenge}&code_challenge_method=S256&state=${state}`;
+
+    // Redirect to Twitter
+    res.redirect(twitterAuthUrl);
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
   }
-});
+};
 
-// Callback route for handling Twitter callback
-app.get('/callback', authenticateUser, authorizeUser, async (req, res) => {
+
+
+app.get('/callback', async (req, res) => {
   const { code, state } = req.query;
 
   // Retrieve the code verifier from the session
@@ -61,7 +62,6 @@ app.get('/callback', authenticateUser, authorizeUser, async (req, res) => {
   sendAuthorizationDataToBot({ code, codeVerifier, state });
 });
 
-// Function to send authorization data to the bot server
 function sendAuthorizationDataToBot({ code, codeVerifier, state }) {
   const botServerEndpoint = 'https://twitterbot-ayoonbutt.azurewebsites.net/authorize';
 
@@ -75,6 +75,21 @@ function sendAuthorizationDataToBot({ code, codeVerifier, state }) {
       console.error(error);
       // Handle error if needed
     });
+}
+
+function base64URLEncode(str) {
+  return str.toString('base64')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=/g, '');
+}
+
+function sha256(buffer) {
+  return require('crypto').createHash('sha256').update(buffer).digest();
+}
+
+function generateCodeVerifier() {
+  return base64URLEncode(require('crypto').randomBytes(32));
 }
 
 app.listen(port, () => {
