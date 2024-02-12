@@ -14,9 +14,6 @@ app.use(express.static(staticAssetsPath));
 
 const port = config.server.port;
 
-app.use(express.json());
-
-
 // Custom middleware for authentication
 const authenticateUser = (req, res, next) => {
   // Implement your authentication logic here
