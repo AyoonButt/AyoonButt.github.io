@@ -1,10 +1,13 @@
+<!-- index.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Twitter Bot Authentication</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Twitter Authentication</title>
 </head>
 <body>
-  <button id="authenticateBtn">Connect to Twitter</button>
+  <button id="authenticateBtn">Authenticate with Twitter</button>
 
   <script>
     const authenticateBtn = document.getElementById('authenticateBtn');
@@ -12,15 +15,22 @@
     authenticateBtn.addEventListener('click', async () => {
       try {
         // Initiate authentication on server
-        const response = await fetch('/initiate-authentication/');
+        const response = await fetch('/api/initiate-authentication', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
 
         // Check for successful response
         if (!response.ok) {
           throw new Error('Error initiating authentication');
         }
 
+        // Parse the response to get the redirect URL
+        const { redirectUrl } = await response.json();
+
         // Redirect to Twitter authorization page
-        const redirectUrl = await response.text();
         window.location.href = redirectUrl;
       } catch (error) {
         console.error(error);
