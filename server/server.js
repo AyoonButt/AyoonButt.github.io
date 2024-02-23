@@ -3,7 +3,7 @@ const session = require('express-session');
 const axios = require('axios');
 const path = require('path');
 const fs = require('fs').promises;
-const config = require('./data/config.js');
+const config = require('../data/config.js');
 
 const app = express();
 
@@ -70,7 +70,7 @@ function sendAuthorizationDataToBot({ code, codeVerifier, state }) {
       // Handle error if needed
     });
 }
-
+ 
 function base64URLEncode(str) {
   return str.toString('base64')
     .replace(/\+/g, '-')
