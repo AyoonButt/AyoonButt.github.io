@@ -15,7 +15,7 @@
     authenticateBtn.addEventListener('click', async () => {
       try {
         // Initiate authentication on server
-        const response = await fetch('/api/initiate-authentication', {
+        const response = await fetch('/initiate-authentication', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

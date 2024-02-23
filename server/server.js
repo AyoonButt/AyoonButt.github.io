@@ -15,7 +15,7 @@ app.use(express.json());
 app.use(session({ secret: 'your-secret-key', resave: true, saveUninitialized: true }));
 
 // API endpoint to initiate Twitter authentication
-app.post('/api/initiate-authentication/', async (req, res) => {
+app.post('/initiate-authentication/', async (req, res) => {
   try {
     const codeVerifier = generateCodeVerifier();
     const codeChallenge = base64URLEncode(sha256(codeVerifier));
