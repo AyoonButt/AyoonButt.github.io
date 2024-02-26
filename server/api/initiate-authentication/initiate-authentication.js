@@ -6,8 +6,6 @@ const config = require('../../../data/config.js');
 
 const app = express();
 
-const staticAssetsPath = path.join(__dirname, '..', 'public');
-app.use(express.static(staticAssetsPath));
 
 const port = config.server.port;
 
