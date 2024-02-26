@@ -12,11 +12,6 @@ app.use(session({ secret: 'your-secret-key', resave: true, saveUninitialized: tr
 const apiPath = '/api';
 const apiRouter = express.Router();
 
-// Middleware to log each incoming request
-app.use((req, res, next) => {
-  console.log(`${req.method} ${req.url}`);
-  next();
-});
 
 // API endpoint to initiate Twitter authentication
 apiRouter.get('/initiate-authentication/', async (req, res) => {
@@ -65,5 +60,5 @@ function sha256(buffer) {
 }
 
 app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
+  console.log(`Server is running at https://authenthicatebot.azurewebsites.net/`);
 });
