@@ -12,6 +12,12 @@ app.use(session({ secret: 'your-secret-key', resave: true, saveUninitialized: tr
 const apiPath = '/api';
 const apiRouter = express.Router();
 
+// Middleware to log each incoming request
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();
+});
+
 // API endpoint to initiate Twitter authentication
 apiRouter.get('/initiate-authentication/', async (req, res) => {
   try {
@@ -35,26 +41,29 @@ apiRouter.get('/initiate-authentication/', async (req, res) => {
 app.use(apiPath, apiRouter);
 
 function generateCodeVerifier() {
-    return base64URLEncode(require('crypto').randomBytes(32));
-  }
-  
+  return base64URLEncode(require('crypto').randomBytes(32));
+}
+
 function generateRandomString(length) {
-  
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let result = '';
-    for (let i = 0; i < length; i++) {
-      result += characters.charAt(Math.floor(Math.random() * characters.length));
-    }
-    return result;
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
   }
-  
+  return result;
+}
+
 function base64URLEncode(str) {
-    return str.toString('base64')
-      .replace(/\+/g, '-')
-      .replace(/\//g, '_')
-      .replace(/=/g, '');
-  }
-  
+  return str.toString('base64')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=/g, '');
+}
+
 function sha256(buffer) {
-    return require('crypto').createHash('sha256').update(buffer).digest();
-  }
+  return require('crypto').createHash('sha256').update(buffer).digest();
+}
+
+app.listen(port, () => {
+  console.log(`Server is running at http://localhost:${port}`);
+});
