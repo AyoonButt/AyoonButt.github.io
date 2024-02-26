@@ -16,7 +16,7 @@
       try {
         // Initiate authentication on server using a GET request
         const response = await fetch('/api/initiate-authentication', {
-          method: 'POST', // Change to GET
+          method: 'GET', // Change to GET
           headers: {
             'Content-Type': 'application/json',
           },

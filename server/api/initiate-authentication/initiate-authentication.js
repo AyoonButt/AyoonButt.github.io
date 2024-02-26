@@ -1,7 +1,5 @@
 const express = require('express');
 const session = require('express-session');
-const axios = require('axios');
-const path = require('path');
 const config = require('../../../data/config.js');
 
 const app = express();
@@ -15,7 +13,7 @@ const apiPath = '/api';
 const apiRouter = express.Router();
 
 // API endpoint to initiate Twitter authentication
-apiRouter.post('/initiate-authentication/', async (req, res) => {
+apiRouter.get('/initiate-authentication/', async (req, res) => {
   try {
     const codeVerifier = generateCodeVerifier();
     const codeChallenge = base64URLEncode(sha256(codeVerifier));
