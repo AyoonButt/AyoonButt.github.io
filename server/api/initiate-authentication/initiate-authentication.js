@@ -16,6 +16,8 @@ app.use(session({ secret: 'your-secret-key', resave: true, saveUninitialized: tr
 
 const apiRouter = express.Router();
 
+app.use('/api', apiRouter);
+
 // API endpoint to initiate Twitter authentication
 apiRouter.post('/initiate-authentication/', async (req, res) => {
   try {
@@ -33,8 +35,7 @@ apiRouter.post('/initiate-authentication/', async (req, res) => {
   }
 });
 
-// Mount the API router at the virtual path
-app.use('/api', apiRouter);
+
 
 function generateAuthenticationParams() {
   const codeVerifier = generateRandomString(32);
