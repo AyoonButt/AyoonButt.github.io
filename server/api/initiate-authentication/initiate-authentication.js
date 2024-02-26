@@ -17,7 +17,8 @@ const apiRouter = express.Router();
 app.use('/api', apiRouter);
 
 // API endpoint to initiate Twitter authentication
-apiRouter.post('/initiate-authentication/', async (req, res) => {
+// Change the route to handle GET requests
+apiRouter.get('/initiate-authentication/', async (req, res) => {
   try {
     const { codeVerifier, codeChallenge, state } = generateAuthenticationParams();
 
@@ -32,6 +33,7 @@ apiRouter.post('/initiate-authentication/', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
 
 
 
