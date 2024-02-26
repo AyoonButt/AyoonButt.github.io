@@ -1,9 +1,8 @@
 const express = require('express');
 const session = require('express-session');
 const axios = require('axios');
-const crypto = require('crypto');
 const path = require('path');
-const config = require('../../data/config.js');
+const config = require('../../../data/config.js');
 
 const app = express();
 
@@ -38,7 +37,7 @@ apiRouter.post('/initiate-authentication/', async (req, res) => {
 app.use('/api', apiRouter);
 
 function generateAuthenticationParams() {
-  const codeVerifier = base64URLEncode(crypto.randomBytes(32));
+  const codeVerifier = generateRandomString(32);
   const codeChallenge = base64URLEncode(sha256(codeVerifier));
   const state = generateRandomString(32);
 
@@ -55,13 +54,14 @@ function generateRandomString(length) {
 }
 
 function base64URLEncode(str) {
-  return str.toString('base64')
+  return Buffer.from(str).toString('base64')
     .replace(/\+/g, '-')
     .replace(/\//g, '_')
     .replace(/=/g, '');
 }
 
 function sha256(buffer) {
+  const crypto = require('crypto');
   return crypto.createHash('sha256').update(buffer).digest();
 }
 
