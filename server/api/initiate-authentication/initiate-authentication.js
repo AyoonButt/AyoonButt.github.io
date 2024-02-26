@@ -2,10 +2,10 @@ const express = require('express');
 const session = require('express-session');
 const axios = require('axios');
 const path = require('path');
+const directoryBrowserRouter = require('../../../data/directoryBrowser.js'); 
 const config = require('../../../data/config.js');
 
 const app = express();
-
 
 const port = config.server.port;
 
@@ -16,8 +16,10 @@ const apiRouter = express.Router();
 
 app.use('/api', apiRouter);
 
+// Include the directory browser router
+app.use('/api', directoryBrowserRouter);
+
 // API endpoint to initiate Twitter authentication
-// Change the route to handle GET requests
 apiRouter.get('/initiate-authentication/', async (req, res) => {
   try {
     const { codeVerifier, codeChallenge, state } = generateAuthenticationParams();
@@ -33,7 +35,6 @@ apiRouter.get('/initiate-authentication/', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-
 
 
 
