@@ -40,63 +40,28 @@ apiRouter.post('/initiate-authentication/', async (req, res) => {
 // Mount the API router at the virtual path
 app.use(apiPath, apiRouter);
 
-// Route for serving index.html
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
-
-// Callback route for handling Twitter response
-app.get('/callback', async (req, res) => {
-  const { code, state } = req.query;
-  const codeVerifier = req.session.codeVerifier;
-
-  // Now you can send the authorization code and code verifier to the bot
-  sendAuthorizationDataToBot({ code, codeVerifier, state });
-
-  // Redirect to a success page or handle the response as needed
-  res.redirect('/success');
-});
-
-function sendAuthorizationDataToBot({ code, codeVerifier, state }) {
-  const botServerEndpoint = 'https://twitterbot-ayoonbutt.azurewebsites.net/authorize';
-
-  axios.post(botServerEndpoint, { code, codeVerifier, state })
-    .then(response => {
-      console.log(response.data);
-      // Handle success if needed
-    })
-    .catch(error => {
-      console.error(error);
-      // Handle error if needed
-    });
-}
-
 function generateCodeVerifier() {
-  return base64URLEncode(require('crypto').randomBytes(32));
-}
-
-function generateRandomString(length) {
-
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let result = '';
-  for (let i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * characters.length));
+    return base64URLEncode(require('crypto').randomBytes(32));
   }
-  return result;
-}
-
+  
+function generateRandomString(length) {
+  
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return result;
+  }
+  
 function base64URLEncode(str) {
-  return str.toString('base64')
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=/g, '');
-}
-
+    return str.toString('base64')
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=/g, '');
+  }
+  
 function sha256(buffer) {
-  return require('crypto').createHash('sha256').update(buffer).digest();
-}
-
-
-app.listen(port, () => {
-  console.log(`Server is running at https://authenthicatebot.azurewebsites.net/`);
-});
+    return require('crypto').createHash('sha256').update(buffer).digest();
+  }
+  
