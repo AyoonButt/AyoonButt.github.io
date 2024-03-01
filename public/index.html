@@ -23,14 +23,7 @@
         });
 
         const responseBodyText = await response.text();
-
-        try {
-          const responseBodyJson = JSON.parse(responseBodyText);
-          // Now responseBodyJson contains the parsed JSON data
-          console.log(responseBodyJson);
-        } catch (error) {
-          console.error('Error parsing JSON:', error);
-        }
+        console.log(responseBodyText);
 
         // Check for successful response
         if (!response.ok) {
