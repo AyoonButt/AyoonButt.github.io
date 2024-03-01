@@ -14,7 +14,7 @@ const apiRouter = express.Router();
 
 
 // API endpoint to initiate Twitter authentication
-apiRouter.get('/initiate-authentication/', async (req, res) => {
+apiRouter.get('/initiate-authentication.json', async (req, res) => {
   try {
     const codeVerifier = generateCodeVerifier();
     const codeChallenge = base64URLEncode(sha256(codeVerifier));
