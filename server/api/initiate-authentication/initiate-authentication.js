@@ -42,7 +42,7 @@ apiRouter.get('/initiate-authentication', async (req, res) => {
 function isDefaultDocumentEnabled(req) {
   // Implement logic to check if default documents are enabled
   // For example, you can check if the request path matches the root URL '/'
-  return req.path === '/initiate-authentication';
+  return req.path === '/';
 }
 
 // Mount the API router at the virtual path
