@@ -1,5 +1,3 @@
-
-<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -13,30 +11,28 @@
     const authenticateBtn = document.getElementById('authenticateBtn');
 
     authenticateBtn.addEventListener('click', async () => {
-    try {
-      // Initiate authentication on server using a GET request
-      const response = await fetch('/api/initiate-authentication', {
-        method: 'GET', // Change to GET
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      try {
+        // Initiate authentication on server using a GET request
+        const response = await fetch('/api/initiate-authentication', {
+          method: 'GET', // Change to GET
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          redirect: 'follow' // Ensure to follow redirects
+        });
 
-      const responseBody = await response.json();
+        // Check if the response was successful
+        if (!response.ok) {
+          throw new Error('Error initiating authentication');
+        }
 
-      // Check if default document is enabled and the response contains the redirect URL
-      if (responseBody.redirectUrl) {
-        // Extract the redirect URL and redirect the browser
-        window.location.href = responseBody.redirectUrl;
-      } else {
-        // Handle other scenarios (if any)
-        console.log('Received unexpected response from the server');
+        // No need to parse JSON, as we're handling redirection
+
+      } catch (error) {
+        console.error(error);
+        alert('Authentication failed: ' + error.message);
       }
-    } catch (error) {
-      console.error(error);
-      alert('Authentication failed: ' + error.message);
-    }
-  });
+    });
   </script>
 </body>
 </html>
