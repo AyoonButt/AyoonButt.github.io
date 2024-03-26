@@ -4,7 +4,7 @@
   "description": "Website collaborating with Twittet Bot product handling Authentication",
   "main": "server.js",
   "scripts": {
-    "start": "node server/server.js"
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
