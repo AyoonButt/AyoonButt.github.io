@@ -95,6 +95,6 @@ function sendAuthorizationDataToBot({ code, codeVerifier, state }) {
     });
 }
 
-// Remove app.listen() method. Let IIS handle the server listening.
-
-module.exports = app;
+app.listen(port, () => {
+  console.log(`Server is running at https://authenthicatebot.azurewebsites.net/`);
+});
