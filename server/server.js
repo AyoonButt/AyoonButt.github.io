@@ -2,14 +2,21 @@ const express = require('express');
 const session = require('express-session');
 const axios = require('axios');
 const path = require('path');
+const crypto = require('crypto');
 const config = require('../data/config.js');
 
 const app = express();
 
+
 const staticAssetsPath = path.join(__dirname, '..', 'public');
 app.use(express.static(staticAssetsPath));
 
-const port = config.server.port;
+// Session middleware
+app.use(session({
+  secret: secretKey,
+  resave: false,
+  saveUninitialized: true
+}));
 
 // Route for serving index.html
 app.get('/', (req, res) => {
@@ -47,6 +54,8 @@ app.get('/callback', async (req, res) => {
   // Redirect to a success page or handle the response as needed
   res.redirect('/success');
 });
+
+const secretKey = crypto.randomBytes(32).toString('hex');
 
 function generateCodeVerifier() {
   return base64URLEncode(require('crypto').randomBytes(32));
@@ -86,6 +95,6 @@ function sendAuthorizationDataToBot({ code, codeVerifier, state }) {
     });
 }
 
-app.listen(port, () => {
-  console.log(`Server is running at https://authenthicatebot.azurewebsites.net/`);
-});
+// Remove app.listen() method. Let IIS handle the server listening.
+
+module.exports = app;
