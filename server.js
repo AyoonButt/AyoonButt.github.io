@@ -4,6 +4,7 @@ const axios = require('axios');
 const path = require('path');
 const crypto = require('crypto');
 const config = require('./data/config.js');
+const port = config.server.port;
 
 const app = express();
 
