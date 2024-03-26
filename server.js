@@ -11,6 +11,7 @@ const app = express();
 const staticAssetsPath = path.join(__dirname, '..', 'public');
 app.use(express.static(staticAssetsPath));
 
+const secretKey = crypto.randomBytes(32).toString('hex');
 // Session middleware
 app.use(session({
   secret: secretKey,
@@ -55,7 +56,7 @@ app.get('/callback', async (req, res) => {
   res.redirect('/success');
 });
 
-const secretKey = crypto.randomBytes(32).toString('hex');
+
 
 function generateCodeVerifier() {
   return base64URLEncode(require('crypto').randomBytes(32));
