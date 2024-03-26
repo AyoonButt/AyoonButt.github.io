@@ -2,9 +2,9 @@
   "name": "ayoonbutt.github.io",
   "version": "1.0.0",
   "description": "Website collaborating with Twittet Bot product handling Authentication",
-  "main": "C:\\Users\\ayoon\\projects\\AyoonButt.github.io\\server\\server.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server/server.js"
   },
   "repository": {
     "type": "git",
