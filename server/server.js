@@ -2,7 +2,7 @@ const express = require('express');
 const session = require('express-session');
 const axios = require('axios');
 const path = require('path');
-const config = require('data\config.js');
+const config = require('./data/config.js');
 
 const app = express();
 
