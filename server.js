@@ -14,6 +14,7 @@ const staticAssetsPath = path.join(__dirname, '..', 'public');
 app.use(express.static(staticAssetsPath));
 
 const secretKey = crypto.randomBytes(32).toString('hex');
+
 // Session middleware
 app.use(session({
   secret: secretKey,
