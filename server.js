@@ -3,8 +3,9 @@ const session = require('express-session');
 const axios = require('axios');
 const path = require('path');
 const crypto = require('crypto');
-const config = require('./data/config.js');
-const port = config.server.port;
+//const config = require('./data/config.js');
+//const port = config.server.port;
+const port = 2999;
 
 const app = express();
 
@@ -32,7 +33,7 @@ app.get('/initiate-authentication', async (req, res) => {
     req.session.codeVerifier = codeVerifier;
     req.session.state = state;
 
-    const twitterAuthUrl = `https://api.twitter.com/oauth/authenticate?client_id=${config.twitterApi.apiKey}&redirect_uri=https://authenthicatebot.azurewebsites.net/callback&response_type=code&scope=read&code_challenge=${codeChallenge}&code_challenge_method=S256&state=${state}`;
+    //const twitterAuthUrl = `https://api.twitter.com/oauth/authenticate?client_id=${config.twitterApi.apiKey}&redirect_uri=https://authenthicatebot.azurewebsites.net/callback&response_type=code&scope=read&code_challenge=${codeChallenge}&code_challenge_method=S256&state=${state}`;
 
     // Redirect the browser to Twitter's authorization page
     res.redirect(302, twitterAuthUrl);
