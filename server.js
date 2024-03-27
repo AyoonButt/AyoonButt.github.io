@@ -10,6 +10,7 @@ const app = express();
 
 
 const staticAssetsPath = path.join(__dirname, '..', 'public');
+
 app.use(express.static(staticAssetsPath));
 
 const secretKey = crypto.randomBytes(32).toString('hex');
@@ -19,11 +20,6 @@ app.use(session({
   resave: false,
   saveUninitialized: true
 }));
-
-// Route for serving index.html
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
-});
 
 // Route for initiating Twitter authentication
 app.get('/initiate-authentication', async (req, res) => {
