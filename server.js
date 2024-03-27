@@ -25,7 +25,7 @@ app.use(session({
 
 // Route for serving index.html
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
+  res.sendFile(path.join(staticAssetsPath, 'index.html'));
 });
 
 
