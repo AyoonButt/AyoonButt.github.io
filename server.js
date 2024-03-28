@@ -9,10 +9,7 @@ const port = 2999;
 
 const app = express();
 
-
-const staticAssetsPath = path.join(__dirname, '..', 'public');
-
-app.use(express.static(staticAssetsPath));
+app.use(express.static('public')); // Serves static files from 'public' directory
 
 const secretKey = crypto.randomBytes(32).toString('hex');
 
@@ -22,6 +19,11 @@ app.use(session({
   resave: false,
   saveUninitialized: true
 }));
+
+// Route for serving index.html
+app.get('/', (req, res) => {
+  res.sendFile(path.join(staticAssetsPath, 'index.html'));
+});
 
 
 // Route for initiating Twitter authentication
