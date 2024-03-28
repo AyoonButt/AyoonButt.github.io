@@ -23,11 +23,6 @@ app.use(session({
   saveUninitialized: true
 }));
 
-// Route for serving index.html
-app.get('/', (req, res) => {
-  res.sendFile(path.join(staticAssetsPath, 'index.html'));
-});
-
 
 // Route for initiating Twitter authentication
 app.get('/initiate-authentication', async (req, res) => {
