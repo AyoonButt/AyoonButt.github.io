@@ -1,6 +1,6 @@
 const express = require('express');
 const axios = require('axios');
-const { generateRandomString, sendAuthorizationDataToBot } = require('./utils');
+const { generateRandomString, sendAuthorizationDataToBot } = require('../utils');
 
 const callbackRouter = express.Router();
 
