@@ -25,3 +25,5 @@ app.use('/callback', callbackRouter);
 app.listen(port, () => {
   console.log(`Server is running at https://authenthicatebot.azurewebsites.net/`);
 });
+
+module.exports = app;
