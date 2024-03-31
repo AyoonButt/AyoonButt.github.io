@@ -6,7 +6,7 @@ const twitterApi = {
 };
 
 const server = {
-  port: 2999, // Your desired port number
+  port: 3000, // Your desired port number
   // Add other server configuration options as needed
 };
 
