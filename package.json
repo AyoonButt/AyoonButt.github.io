@@ -2,6 +2,7 @@
   "name": "ayoonbutt.github.io",
   "version": "1.0.0",
   "description": "Website collaborating with Twitter Bot product handling Authentication",
+  "main": "server.js",
   "scripts": {
     "start": "node ./bin/www"
   },
