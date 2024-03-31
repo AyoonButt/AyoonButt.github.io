@@ -3,13 +3,14 @@ const session = require('express-session');
 const initiateAuthRouter = require('./routes/initiateAuthRoute.js');
 const callbackRouter = require('./routes/callbackRoute.js');
 const config = require('./data/config.js');
+const {generateRandomString} = require('./utils.js');
 const port = config.server.port;
 
 const app = express();
 
 app.use(express.static('public')); // Serves static files from 'public' directory
 
-const secretKey = crypto.randomBytes(32).toString('hex');
+const secretKey = generateRandomString(32);
 
 // Session middleware
 app.use(session({
