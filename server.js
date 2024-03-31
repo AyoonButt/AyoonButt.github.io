@@ -2,7 +2,7 @@ const express = require('express');
 const session = require('express-session');
 const initiateAuthRouter = require('./routes/initiateAuthRoute.js');
 const callbackRouter = require('./routes/callbackRoute.js');
-const config = require('../data/config.js');
+const config = require('./data/config.js');
 const port = config.server.port;
 
 const app = express();
