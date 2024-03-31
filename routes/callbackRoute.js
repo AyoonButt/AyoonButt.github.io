@@ -1,18 +1,26 @@
 const express = require('express');
-const axios = require('axios');
-const { generateRandomString, sendAuthorizationDataToBot } = require('../utils');
+const { generateCodeVerifier, base64URLEncode, sha256, sendAuthorizationDataToBot } = require('./utils');
+const config = require('./data/config.js'); // Importing from config.js
 
-const callbackRouter = express.Router();
+const initiateAuthRouter = express.Router();
 
-callbackRouter.get('/', async (req, res) => {
-  const { code, state } = req.query;
-  const codeVerifier = req.session.codeVerifier;
+initiateAuthRouter.get('/', async (req, res) => {
+  try {
+    const codeVerifier = generateCodeVerifier();
+    const codeChallenge = base64URLEncode(sha256(codeVerifier));
+    const state = generateRandomString(32);
 
-  // Now you can send the authorization code and code verifier to the bot
-  sendAuthorizationDataToBot({ code, codeVerifier, state });
+    req.session.codeVerifier = codeVerifier;
+    req.session.state = state;
 
-  // Redirect to a success page or handle the response as needed
-  res.redirect('/success');
+    const twitterAuthUrl = `https://api.twitter.com/oauth/authenticate?client_id=${config.twitterApi.apiKey}&redirect_uri=https://authenthicatebot.azurewebsites.net/callback&response_type=code&scope=read&code_challenge=${codeChallenge}&code_challenge_method=S256&state=${state}`;
+
+    // Redirect the browser to Twitter's authorization page
+    res.redirect(302, twitterAuthUrl);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 });
 
-module.exports = callbackRouter;
+module.exports = initiateAuthRouter;

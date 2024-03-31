@@ -1,8 +1,8 @@
 const express = require('express');
 const session = require('express-session');
-const initiateAuthRouter = require('./routes/initiateAuthRoute');
-const callbackRouter = require('./routes/callbackRoute');
-const config = require('./data/config.js');
+const initiateAuthRouter = require('./routes/initiateAuthRoute.js').default;
+const callbackRouter = require('./routes/callbackRoute.js').default;
+const config = require('./data/config.mjs');
 const port = config.server.port;
 
 const app = express();

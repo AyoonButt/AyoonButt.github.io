@@ -1,6 +1,6 @@
 
 const express = require('express');
-const { generateCodeVerifier, base64URLEncode, sha256, sendAuthorizationDataToBot } = require('../utils');
+const { generateCodeVerifier, base64URLEncode, sha256, sendAuthorizationDataToBot } = require('../utils.js');
 const config = require('../data/config.js'); // Importing from config.js
 
 const initiateAuthRouter = express.Router();
